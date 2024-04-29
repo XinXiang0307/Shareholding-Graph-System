@@ -10,29 +10,50 @@ author:
         state: DC
         url: 'https://www.georgetown.edu/'
 abstract: |
-  得写个250-500字的abstract 简单实现了，，，，，，能够对后续进行，，，有很好的价值。
+  得写个250-500字的abstract 简单实现了，，，，，，能够对后续进行，，，有很好的价值。基于这些数据以及对结构化及半结构化数据的挖掘，可以构造基于知识图谱的企业风险预测方法及系统，从而能够解决企业风险预测的高成本、低效率、 高门槛、低时效的问题。
 keywords:
   - Knowledge Graph
   - Risk Management
 jupyter: anly-580
-
+format:
+    html:
+        embed-resources: true
 ---
 
 ## Introduction
 
 Explain your chosen topic and why it is important for your field.
 
-在这个项目里，我选择了图数据结构，并且阐述在传统金融行业面临的困境。
+在这个项目里，我选择了图论以及图结构作为主题，并且想阐述图论是如何在传统金融行业（比如商业银行）中进行辅助应用的。
+面对现今金融时代爆发增长的企业需求，以及瞬息万变的市场环境，原来单点突破进行风险控制的方法已经远远不够。急需通过科技手段，分析企业风险、提高工作效率、来降低信贷成本。传统金融行业对企业信用风险进行识别和检测时，使用的大多还是传统方法：现场调查、基于规则的预测等方式。
 
-通过图结构在金融行业的垂直领域进行深耕，能够挖掘出很多我们无法在普通关系性数据库发现的细节。编织出一张知识图谱，辅助金融行业的高风险管理。
+而我们知道商业银行内部有较完善的客户数据以及交易数据，基于这些数据以及对结构化及半结构化数据的挖掘，通过知识图谱在商业银行的垂直领域（比如股权关系，，，）进行深耕，能够挖掘及展现出出很多我们无法在普通关系性数据库发现的细节。如此一来，通过编织出一张张知识图谱，我们可以辅助金融行业的高风险管理及控制。从而提升商业银行对于企业经营风险的预判能力，及早预测，规避风险。
+
+In this project, I chose graph theory and graph structure as the theme, and would like to explain how graph theory can be applied in the traditional financial industry (e.g. commercial banks).
+In the face of the explosive growth of enterprise demand in the current financial era and the rapidly changing market environment, the original single-point breakthrough approach to risk control is far from being sufficient. There is an urgent need to analyze enterprise risk, improve work efficiency and reduce credit costs through scientific and technological means. When the traditional financial industry identifies and detects enterprise credit risk, most of the traditional methods are still used: on-site investigation, rule-based prediction and so on.
+
+As we know that commercial banks have better customer data and transaction data, based on these data and the mining of structured and semi-structured data, through the knowledge graph in the vertical areas of commercial banks (e.g., equity relationship, etc.), we can dig and show a lot of details that we can not be found in ordinary relational databases. In this way, by weaving a knowledge graph, we can assist in high risk management and control in the financial industry. In this way, we can enhance the ability of commercial banks to anticipate business risks, make early predictions, and avoid risks.
 
 ## Literature Review
 
 ### 讨论知识图谱的进化发展历程（简短）
 
-### 讨论金融系统（传统银行）里进行数据分析的复杂性和重要性（简短）
+
+
+### 讨论金融系统（商业银行）里进行数据分析的复杂性和重要性（简短）
+
+
 
 ### 讨论知识图谱在金融行业的应用（重点）
+
+1. fraud detection
+
+
+2. risk assessment and management
+
+
+3. investment analysis / regulatory compliance
+
 
 
 ## Example : Simple Shareholding Graph System
@@ -43,17 +64,19 @@ Explain your chosen topic and why it is important for your field.
 
 ### Data source 
 
+The data was from gihub project [Nebula Graph Shareholding project](https://github.com/wey-gu/nebula-shareholding-example/tree/main). And the author of the project says that the data was a faker data which will simulates the real situation and does not cause information leakage. So I borrowed the author's data generator code and made changes to complete the data acquisition for this project.
 
-`person` can hold a `corp` in {share} %
+There are various kinds of relationships when we checking companies' shareholding breakthrough, here let's simplify it with only two kind of entities: person and corp, and with following relationship types.
 
-`person` can be relative with another `person`
+- `person` can hold a `corp` in {share} %
 
-`corp` can hold another `corp` in {share} %
+- `person` can be relative with another `person`
 
-`corp` can be a branch of another `corp`
+- `corp` can hold another `corp` in {share} %
 
-`person` can be as a role of a `corp`
+- `corp` can be a branch of another `corp`
 
+- `person` can be as a role of a `corp`
 
 
 ### Code
@@ -62,10 +85,84 @@ Explain your chosen topic and why it is important for your field.
 
 因为原始数据集是放进图数据库直接存储，可以在图数据库中直接设置tag和edge。而我在example中需要自己实现graph类，所以需要对原始数据集进行预处理。
 
+#### Data generators
+
+由于github上的sample数据集数量较大，在简单的图可视化过程中可能会造成可视化过于复杂难懂的问题。所以我们通过以下代码简化数据集大小及复杂度，便于后面的展示。
+
 ```{python}
-! pip install faker
-! pip install pydbgen
+import csv
+import pandas as pd
+from faker import Faker
+from random import randint
+
+PERSON_COUNT = 8
+CORP_COUNT = 6
+PERSON_SHAREHOLD_COUNT = 15
+CORP_REL_COUNT = 10
+CORP_SHAREHOLD_COUNT = 10
+PERSON_REL_COUNT = 4
+#PERSON_ROLE_COUNT = 50
+
+WRITE_BATCH = 10
+
+faker = Faker()
+Faker.seed(1234)  # Correct way to seed
+
+def csv_writer(file_path, row_count, row_generator):
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
+        csv_buffer = []
+        for row in range(row_count):
+            csv_buffer.append(row_generator())
+            if len(csv_buffer) >= WRITE_BATCH:
+                writer.writerows(csv_buffer)
+                csv_buffer = []
+        if csv_buffer:
+            writer.writerows(csv_buffer)
+
+# Generate Persons and Corporations using Faker
+def generate_person_data():
+    data = {'person_id': ['p_' + str(i) for i in range(PERSON_COUNT)], 'person_name': [faker.name() for _ in range(PERSON_COUNT)]}
+    return pd.DataFrame(data)
+
+def generate_corp_data():
+    data = {'corp_id': ['c_' + str(i) for i in range(CORP_COUNT)], 'corp_name': [faker.company() for _ in range(CORP_COUNT)]}
+    return pd.DataFrame(data)
+
+
+# Save persons and corporations to CSV
+generate_person_data().to_csv('data/person.csv', index=False)
+generate_corp_data().to_csv('data/corp.csv', index=False)
+
+# Relationship generators
+def person_share_generator():
+    return ('p_' + str(randint(0, PERSON_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)), randint(0, 100))
+
+def person_rel_generator():
+    return ('p_' + str(randint(0, PERSON_COUNT - 1)), 'p_' + str(randint(0, PERSON_COUNT - 1)), randint(1, 3))
+
+def corp_rel_generator():
+    return ('c_' + str(randint(0, CORP_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)))
+
+def corp_share_generator():
+    return ('c_' + str(randint(0, CORP_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)), randint(0, 100))
+'''
+def person_corp_role_generator():
+    job_title = faker.job().replace(',', '')
+    return ('p_' + str(randint(0, PERSON_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)), job_title)
+'''
+# Writing the relationships to CSV
+csv_writer('data/person_corp_share.csv', PERSON_SHAREHOLD_COUNT, person_share_generator)
+csv_writer('data/person_rel.csv', PERSON_REL_COUNT, person_rel_generator)
+csv_writer('data/corp_rel.csv', CORP_REL_COUNT, corp_rel_generator)
+csv_writer('data/corp_share.csv', CORP_SHAREHOLD_COUNT, corp_share_generator)
+#csv_writer('data/person_corp_role.csv', PERSON_ROLE_COUNT, person_corp_role_generator)
+
 ```
+
+#### Import Data
+
+而在这一步我们将data generator出来的csv数据导入，生成dataframe，便于后续往graph class传参数。
 
 ```{python}
 import pandas as pd
@@ -121,12 +218,25 @@ print(person_corp_role_df.head(6))
 '''
 ```
 
-对自己写的图数据库的代码进行解释。
-参考老师的hw123
+#### Define the SelfdefinedGraph Class
 
 The SelfdefinedGraph Class
 Each of the bullt point here represents an element of this class.
 - `__init__(self)`. This 
+
+- `add_vertex(self, vertex, vertex_type)`.
+
+- `add_edge(self, from_vertex, to_vertex, relationship_type, weight=None)`
+
+- `remove_vertex(self, vertex)`.
+
+- `remove_edge(self, from_vertex, to_vertex)`.
+
+- `update_edge(self, from_vertex, to_vertex, new_weight)`.
+
+- `print_adjacency_list(self)`.
+
+- ``
 
 ```{python}
 # Python code to illustrate the example
@@ -193,6 +303,8 @@ class SelfdefinedGraph:
         return adjacency_list
 ```
 
+在这里我需要对graph类生成的adjacency_list进行可视化，就有了下面的visualize_graph function。
+
 ```{python}
 def visualize_graph(adjacency_list):
     G = nx.DiGraph()
@@ -209,8 +321,6 @@ def visualize_graph(adjacency_list):
                 edge_colors.append('blue')  # Blue for financial relationships
             elif edge['type'] == 'relative':
                 edge_colors.append('green')  # Green for family relationships
-            elif edge['type'] == 'branch':
-                edge_colors.append('red')  # Red for roles
 
     pos = nx.spring_layout(G)  # Positions for all nodes
     nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color=edge_colors, width=2, node_size=20)
@@ -259,6 +369,7 @@ print(graph.query_edges_by_type('p_5', 'relative'))
 ```
 
 ```{python}
+'''
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -269,6 +380,7 @@ G_test.add_edge("A", "B")
 pos_test = nx.circular_layout(G_test)
 nx.draw(G_test, pos_test, with_labels=True)
 plt.show()
+'''
 ```
 
 ```{python}
@@ -277,9 +389,24 @@ adjacency_list = graph.adjacency_list
 ```
 
 ```{python}
-for node, properties in adjacency_list.items():
-        for edge in properties['edges']:
-                print(edge['type'])
+import networkx as nx
+import matplotlib.pyplot as plt
+import community as community_louvain
+
+# Create a graph
+G = nx.karate_club_graph()
+# Compute the best partition
+partition = community_louvain.best_partition(G)
+# Draw the graph
+pos = nx.spring_layout(G)  # Position nodes using Fruchterman-Reingold force-directed algorithm
+cmap = plt.get_cmap('viridis')  # Color map for coloring nodes
+# Color the nodes according to their partition
+nx.draw_networkx_nodes(G, pos, partition.keys(), node_size=40,
+                       cmap=cmap, node_color=list(partition.values()))
+nx.draw_networkx_edges(G, pos, alpha=0.5)
+plt.show()
+
+
 ```
 
 ## Conclusion
