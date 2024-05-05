@@ -1,5 +1,5 @@
 ---
-title: 金融业与知识图谱
+title: Leveraging Knowledge Graphs for Shareholding Analysis in Commercial Banking
 date: '2024-04-27'
 author:
   - name: Xin Xiang
@@ -10,24 +10,18 @@ author:
         state: DC
         url: 'https://www.georgetown.edu/'
 abstract: |
-  得写个250-500字的abstract 简单实现了，，，，，，能够对后续进行，，，有很好的价值。基于这些数据以及对结构化及半结构化数据的挖掘，可以构造基于知识图谱的企业风险预测方法及系统，从而能够解决企业风险预测的高成本、低效率、 高门槛、低时效的问题。
+  draft: Based on these data and the mining of structured and semi-structured data, enterprise risk prediction methods and systems based on knowledge graphs can be constructed, so as to be able to solve the problems of high cost, low efficiency, high threshold, and low timeliness of enterprise risk prediction.
 keywords:
   - Knowledge Graph
   - Risk Management
-jupyter: anly-580
+  - Ownership Structure
 format:
-    html:
-        embed-resources: true
+  html:
+    embed-resources: true
+jupyter: anly-580
 ---
 
 ## Introduction
-
-Explain your chosen topic and why it is important for your field.
-
-在这个项目里，我选择了图论以及图结构作为主题，并且想阐述图论是如何在传统金融行业（比如商业银行）中进行辅助应用的。
-面对现今金融时代爆发增长的企业需求，以及瞬息万变的市场环境，原来单点突破进行风险控制的方法已经远远不够。急需通过科技手段，分析企业风险、提高工作效率、来降低信贷成本。传统金融行业对企业信用风险进行识别和检测时，使用的大多还是传统方法：现场调查、基于规则的预测等方式。
-
-而我们知道商业银行内部有较完善的客户数据以及交易数据，基于这些数据以及对结构化及半结构化数据的挖掘，通过知识图谱在商业银行的垂直领域（比如股权关系，，，）进行深耕，能够挖掘及展现出出很多我们无法在普通关系性数据库发现的细节。如此一来，通过编织出一张张知识图谱，我们可以辅助金融行业的高风险管理及控制。从而提升商业银行对于企业经营风险的预判能力，及早预测，规避风险。
 
 In this project, I chose graph theory and graph structure as the theme, and would like to explain how graph theory can be applied in the traditional financial industry (e.g. commercial banks).
 In the face of the explosive growth of enterprise demand in the current financial era and the rapidly changing market environment, the original single-point breakthrough approach to risk control is far from being sufficient. There is an urgent need to analyze enterprise risk, improve work efficiency and reduce credit costs through scientific and technological means. When the traditional financial industry identifies and detects enterprise credit risk, most of the traditional methods are still used: on-site investigation, rule-based prediction and so on.
@@ -36,31 +30,37 @@ As we know that commercial banks have better customer data and transaction data,
 
 ## Literature Review
 
-### 讨论知识图谱的进化发展历程（简短）
+### This paragraph will discuss the evolutionary development of knowledge graphs (brief)
 
+In progress
 
+### This paragraph will discuss the complexity and importance of data analysis in the financial system (commercial banks) (brief)
 
-### 讨论金融系统（商业银行）里进行数据分析的复杂性和重要性（简短）
+The financial system, as the core of a modern economy, plays a very important role in promoting national development.
 
+In progress
 
+### Discuss the applications of knowledge graphs in the financial industry (highlights)
 
-### 讨论知识图谱在金融行业的应用（重点）
 
 1. fraud detection
 
+In progress
 
 2. risk assessment and management
 
+In progress
 
 3. investment analysis / regulatory compliance
 
+In progress
 
 
 ## Example : Simple Shareholding Graph System
 
 ### Description
 
-
+In progress
 
 ### Data source 
 
@@ -83,25 +83,26 @@ There are various kinds of relationships when we checking companies' shareholdin
 
 #### Data preparation
 
-因为原始数据集是放进图数据库直接存储，可以在图数据库中直接设置tag和edge。而我在example中需要自己实现graph类，所以需要对原始数据集进行预处理。
+Since the original dataset is stored in the graph database, you can set the tag and edge directly in the graph database, but I need to implement my own graph class in the example, so I need to do some preprocessing on the original dataset.
 
 #### Data generators
 
-由于github上的sample数据集数量较大，在简单的图可视化过程中可能会造成可视化过于复杂难懂的问题。所以我们通过以下代码简化数据集大小及复杂度，便于后面的展示。
+Due to the large number of sample datasets on github, it may cause the visualization to be too complex and difficult to understand during simple graph visualization. So we simplify the dataset size and complexity by the following code for later presentation.
 
 ```{python}
+#| echo: false
 import csv
 import pandas as pd
 from faker import Faker
 from random import randint
 
-PERSON_COUNT = 8
-CORP_COUNT = 6
+PERSON_COUNT = 10
+CORP_COUNT = 10
 PERSON_SHAREHOLD_COUNT = 15
 CORP_REL_COUNT = 10
-CORP_SHAREHOLD_COUNT = 10
-PERSON_REL_COUNT = 4
-#PERSON_ROLE_COUNT = 50
+CORP_SHAREHOLD_COUNT = 15
+PERSON_REL_COUNT = 5
+PERSON_ROLE_COUNT = 10
 
 WRITE_BATCH = 10
 
@@ -112,11 +113,15 @@ def csv_writer(file_path, row_count, row_generator):
     with open(file_path, mode='w', newline='') as file:
         writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
         csv_buffer = []
-        for row in range(row_count):
-            csv_buffer.append(row_generator())
-            if len(csv_buffer) >= WRITE_BATCH:
-                writer.writerows(csv_buffer)
-                csv_buffer = []
+        used_pairs = set()  # Keep track of pairs already used
+        while len(used_pairs) < row_count:
+            new_row = row_generator()
+            if new_row not in used_pairs:
+                used_pairs.add(new_row)
+                csv_buffer.append(new_row)
+                if len(csv_buffer) >= WRITE_BATCH:
+                    writer.writerows(csv_buffer)
+                    csv_buffer = []
         if csv_buffer:
             writer.writerows(csv_buffer)
 
@@ -129,11 +134,6 @@ def generate_corp_data():
     data = {'corp_id': ['c_' + str(i) for i in range(CORP_COUNT)], 'corp_name': [faker.company() for _ in range(CORP_COUNT)]}
     return pd.DataFrame(data)
 
-
-# Save persons and corporations to CSV
-generate_person_data().to_csv('data/person.csv', index=False)
-generate_corp_data().to_csv('data/corp.csv', index=False)
-
 # Relationship generators
 def person_share_generator():
     return ('p_' + str(randint(0, PERSON_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)), randint(0, 100))
@@ -141,28 +141,23 @@ def person_share_generator():
 def person_rel_generator():
     return ('p_' + str(randint(0, PERSON_COUNT - 1)), 'p_' + str(randint(0, PERSON_COUNT - 1)), randint(1, 3))
 
-def corp_rel_generator():
-    return ('c_' + str(randint(0, CORP_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)))
-
 def corp_share_generator():
     return ('c_' + str(randint(0, CORP_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)), randint(0, 100))
-'''
+
 def person_corp_role_generator():
     job_title = faker.job().replace(',', '')
     return ('p_' + str(randint(0, PERSON_COUNT - 1)), 'c_' + str(randint(0, CORP_COUNT - 1)), job_title)
-'''
+
 # Writing the relationships to CSV
 csv_writer('data/person_corp_share.csv', PERSON_SHAREHOLD_COUNT, person_share_generator)
 csv_writer('data/person_rel.csv', PERSON_REL_COUNT, person_rel_generator)
-csv_writer('data/corp_rel.csv', CORP_REL_COUNT, corp_rel_generator)
 csv_writer('data/corp_share.csv', CORP_SHAREHOLD_COUNT, corp_share_generator)
-#csv_writer('data/person_corp_role.csv', PERSON_ROLE_COUNT, person_corp_role_generator)
-
+csv_writer('data/person_corp_role.csv', PERSON_ROLE_COUNT, person_corp_role_generator)
 ```
 
 #### Import Data
 
-而在这一步我们将data generator出来的csv数据导入，生成dataframe，便于后续往graph class传参数。
+In this step, we import the csv data from the data generator to generate a dataframe, so that we can pass parameters to the graph class.
 
 ```{python}
 import pandas as pd
@@ -172,7 +167,7 @@ import pandas as pd
 path1 = './data/corp.csv'
 # load the csv into a DataFrame, and specify the column names
 corp_df = pd.read_csv(path1)
-print(corp_df.head(6))
+#print(corp_df.head(6))
 
 # [2] person.csv
 # define the person id and name from the csv file
@@ -187,41 +182,66 @@ column_names = ['person_id1', 'person_id2','rel_degree']
 person_rel_df = pd.read_csv(path3, header=None, names=column_names)
 #print(person_rel_df.head(6))
 
-# [4] corp_rel.csv
-# define the relationship of corporation id1 and id2 from the csv file
-path4 = './data/corp_rel.csv'
-column_names = ['corp_id1', 'corp_id2']
-corp_rel_df = pd.read_csv(path4, header=None, names=column_names)
-#print(corp_rel_df.head(6))
-
-# [5] corp_share.csv
+# [4] corp_share.csv
 # define the holdsharing of corporation id1 to id2 from the csv file
 path5 = './data/corp_share.csv'
 column_names = ['corp_id1', 'corp_id2','share_per']
 corp_share_df = pd.read_csv(path5, header=None, names=column_names)
 #print(corp_share_df.head(6))
 
-# [6] person_corp_share.csv
+# [5] person_corp_share.csv
 # define the holdsharing of person id to the corporation id from the csv file
 path6 = './data/person_corp_share.csv'
 column_names = ['person_id', 'corp_id','share_per']
 person_corp_share_df = pd.read_csv(path6, header=None, names=column_names)
-print(person_corp_share_df.head(6))
+#print(person_corp_share_df.head(6))
 
-'''
-# [7] person_corp_role.csv
+# [6] person_corp_role.csv
 # define the role of person id in the corporation id from the csv file
 path7 = './data/person_corp_role.csv'
 column_names = ['person_id', 'corp_id','role']
 person_corp_role_df = pd.read_csv(path7, header=None, names=column_names)
-print(person_corp_role_df.head(6))
-'''
+#print(person_corp_role_df.head(6))
 ```
+
+::: {.panel-tabset}
+
+## Corporation df
+```{python}
+corp_df.head(6)
+```
+
+## Person df
+```{python}
+person_df.head(6)
+```
+
+## Person relationship df
+```{python}
+person_rel_df.head(6)
+```
+
+## Corporation shareholding df
+```{python}
+corp_share_df.head(6)
+```
+
+## Person corporation shareholding df
+```{python}
+person_corp_share_df.head(6)
+```
+
+## Person corporation role df
+```{python}
+person_corp_role_df.head(6)
+```
+:::
 
 #### Define the SelfdefinedGraph Class
 
 The SelfdefinedGraph Class
 Each of the bullt point here represents an element of this class.
+
 - `__init__(self)`. This 
 
 - `add_vertex(self, vertex, vertex_type)`.
@@ -256,13 +276,14 @@ class SelfdefinedGraph:
             self.G.add_node(vertex, type=vertex_type)
 
     def add_edge(self, from_vertex, to_vertex, relationship_type, weight=None):
-        if from_vertex in self.adjacency_list:
-            self.adjacency_list[from_vertex]['edges'].append({
-                'to': to_vertex,
-                'type': relationship_type,
-                'weight': weight
-            })
-            self.G.add_edge(from_vertex, to_vertex, weight=weight, type=relationship_type)
+        if weight is not None:  # Only add edges that have a defined weight
+            if from_vertex in self.adjacency_list:
+                self.adjacency_list[from_vertex]['edges'].append({
+                    'to': to_vertex,
+                    'type': relationship_type,
+                    'weight': weight
+                })
+                self.G.add_edge(from_vertex, to_vertex, weight=weight, type=relationship_type)
 
     def remove_vertex(self, vertex):
         if vertex in self.adjacency_list:
@@ -284,50 +305,52 @@ class SelfdefinedGraph:
                 if edge['to'] == to_vertex:
                     edge['weight'] = new_weight
 
-    def query_vertices_by_type(self, vertex_type):
-        # Return vertices of a specific type
-        return [vertex for vertex, properties in self.adjacency_list.items() if properties['type'] == vertex_type]
+    def query_subset_by_node(self, node):
+        """
+        Returns a subset containing all connections to and from the specified node.
+        The returned structure mimics the adjacency_list structure but limited to nodes
+        connected to the specified node.
+        """
+        if node not in self.adjacency_list:
+            return {}  # Node does not exist
 
-    def query_edges_by_type(self, from_vertex, edge_type):
-        # Return edges of a specific type from a given vertex
-        if from_vertex in self.adjacency_list:
-            return [edge for edge in self.adjacency_list[from_vertex]['edges'] if edge['type'] == edge_type]
+        subset = {}
+        # Include directly connected nodes
+        for n, props in self.adjacency_list.items():
+            if n == node:
+                subset[n] = props
+            for edge in props['edges']:
+                if edge['to'] == node:
+                    if n not in subset:
+                        subset[n] = {'type': self.adjacency_list[n]['type'], 'edges': []}
+                    subset[n]['edges'].append(edge)
+                if n == node:
+                    if edge['to'] not in subset:
+                        subset[edge['to']] = {'type': self.adjacency_list[edge['to']]['type'], 'edges': []}
+    
+        return subset
+    
+    def query_subset_by_relationship_type(self, relationship_type):
+        """
+        Returns a subset of the adjacency list containing only edges of the specified relationship type.
+        """
+        subset = {}
+        for node, properties in self.adjacency_list.items():
+            # Filter edges to include only those of the specified type
+            filtered_edges = [edge for edge in properties['edges'] if edge['type'] == relationship_type]
+            if filtered_edges:
+                # Only add the node if it has edges of the specified type
+                if node not in subset:
+                    subset[node] = {'type': properties['type'], 'edges': filtered_edges}
+                
+                # Include nodes connected by these edges to ensure the subset is complete
+                for edge in filtered_edges:
+                    target_node = edge['to']
+                    if target_node not in subset:
+                        target_node_edges = [e for e in self.adjacency_list[target_node]['edges'] if e['type'] == relationship_type]
+                        subset[target_node] = {'type': self.adjacency_list[target_node]['type'], 'edges': target_node_edges}
 
-    def query_edges_by_weight(self, from_vertex, min_weight, max_weight):
-        # Return edges within a certain weight range from a given vertex
-        if from_vertex in self.adjacency_list:
-            return [edge for edge in self.adjacency_list[from_vertex]['edges'] if min_weight <= edge['weight'] <= max_weight]
-
-    def print_adjacency_list(self):
-        adjacency_list = self.adjacency_list
-        return adjacency_list
-```
-
-在这里我需要对graph类生成的adjacency_list进行可视化，就有了下面的visualize_graph function。
-
-```{python}
-def visualize_graph(adjacency_list):
-    G = nx.DiGraph()
-    # Add nodes with different styles if needed
-    for node, properties in adjacency_list.items():
-        G.add_node(node, type=properties['type'])
-
-    # Add edges with different colors based on the relationship type
-    edge_colors = []
-    for node, properties in adjacency_list.items():
-        for edge in properties['edges']:
-            G.add_edge(node, edge['to'], weight=edge['weight'])
-            if edge['type'] == 'holds':
-                edge_colors.append('blue')  # Blue for financial relationships
-            elif edge['type'] == 'relative':
-                edge_colors.append('green')  # Green for family relationships
-
-    pos = nx.spring_layout(G)  # Positions for all nodes
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color=edge_colors, width=2, node_size=20)
-    #labels = nx.get_edge_attributes(G, 'weight')
-    #nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-    plt.title('Graph Visualization of Relationships')
-    plt.show()
+        return subset
 ```
 
 ```{python}
@@ -347,74 +370,155 @@ for _, row in person_corp_share_df.iterrows():
 for _, row in person_rel_df.iterrows():
     graph.add_edge(row['person_id1'], row['person_id2'], 'relative', row['rel_degree'])
 
-for _, row in corp_rel_df.iterrows():
-    graph.add_edge(row['corp_id1'], row['corp_id2'], 'branch')
-
 for _, row in corp_share_df.iterrows():
     graph.add_edge(row['corp_id1'], row['corp_id2'], 'holds',row['share_per'])
 
-'''
 for _, row in person_corp_role_df.iterrows():
     graph.add_edge(row['person_id'], row['corp_id'], 'roles', row['role'])
-'''
 ```
 
-```{python}
-graph.print_adjacency_list()
-```
+visualize_graph function
 
 ```{python}
-#print(graph.query_vertices_by_type('person'))
-print(graph.query_edges_by_type('p_5', 'relative'))
-```
-
-```{python}
-'''
-import networkx as nx
 import matplotlib.pyplot as plt
+import networkx as nx
+import matplotlib.patches as mpatches
 
-G_test = nx.DiGraph()
-G_test.add_node("A",type = 'person')
-G_test.add_node("B",type = 'corp')
-G_test.add_edge("A", "B")
-pos_test = nx.circular_layout(G_test)
-nx.draw(G_test, pos_test, with_labels=True)
-plt.show()
-'''
+def visualize_graph(adjacency_list):
+    G = nx.MultiDiGraph()
+    for node, properties in adjacency_list.items():
+        G.add_node(node, type=properties['type'])
+        for edge in properties['edges']:
+            G.add_edge(node, edge['to'], weight=edge['weight'], relationship=edge['type'])
+    plt.figure(figsize=(8,6))
+    pos = nx.shell_layout(G)  # You can change the layout as per your need
+    edge_colors = []
+    for u, v, data in G.edges(data=True):
+        color = '#0077B6' if data['relationship'] == 'holds' else '#023047' if data['relationship'] == 'relative' else '#FB8500'
+        edge_colors.append(color)
+        # Edge labels
+        edge_label = f"{data['weight']}%" if isinstance(data['weight'], (int, float)) else f"{data['weight']}"
+        mid_point_x, mid_point_y = (pos[u][0] + pos[v][0]) / 2, (pos[u][1] + pos[v][1]) / 2
+        plt.text(mid_point_x, mid_point_y, edge_label, color='black', horizontalalignment='left', verticalalignment='center')
+
+    # Drawing
+    nx.draw_networkx_edges(G, pos, arrowstyle='-|>', arrowsize=15, edge_color=edge_colors, node_size=900)
+    node_colors = ['#CAF0F8' if G.nodes[node]['type'] == 'person' else '#ffb703' for node in G]
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=900)
+    nx.draw_networkx_labels(G, pos)
+
+    # Legends
+    person_patch = mpatches.Patch(color='#CAF0F8', label='Person')
+    corp_patch = mpatches.Patch(color='#ffb703', label='Corp')
+    holds_patch = mpatches.Patch(color='#0077B6', label='Holds Relationship')
+    relative_patch = mpatches.Patch(color='#023047', label='Relative Relationship')
+    role_patch = mpatches.Patch(color='#FB8500', label='Role Relationship')
+    legend = plt.legend(handles=[person_patch, corp_patch, role_patch, holds_patch, relative_patch], loc='upper left', bbox_to_anchor=(0.93, 1))
+    legend.set_title('Nodes & Edges Types')
+
+    plt.title('Graph Visualization of Shareholding Relationships', fontsize=20)
+    plt.axis('off')  # Turn off the axis
+    plt.show()
 ```
+
+整体画出股权关系图，数据错综复杂，且可视化中很难看清。
 
 ```{python}
 adjacency_list = graph.adjacency_list
-#visualize_graph(adjacency_list=adjacency_list)
+visualize_graph(adjacency_list=adjacency_list)
 ```
+
+
+分类型查询，可视化会清晰很多
+
+1. 按人/公司查询
+
+```{python}
+sub_list1 = graph.query_subset_by_node('p_3')
+visualize_graph(adjacency_list=sub_list1)
+```
+
+```{python}
+sub_list2 = graph.query_subset_by_node('c_5')
+visualize_graph(adjacency_list=sub_list2)
+```
+
+2. 按关系查询
+
+```{python}
+sub_list3 = graph.query_subset_by_relationship_type('holds')
+visualize_graph(adjacency_list=sub_list3)
+```
+
+```{python}
+sub_list4 = graph.query_subset_by_relationship_type('relative')
+visualize_graph(adjacency_list=sub_list4)
+```
+
+```{python}
+sub_list5 = graph.query_subset_by_relationship_type('roles')
+visualize_graph(adjacency_list=sub_list5)
+```
+
 
 ```{python}
 import networkx as nx
 import matplotlib.pyplot as plt
-import community as community_louvain
+import matplotlib.patches as mpatches
+import numpy as np
+import matplotlib as mpl
 
-# Create a graph
-G = nx.karate_club_graph()
-# Compute the best partition
-partition = community_louvain.best_partition(G)
-# Draw the graph
-pos = nx.spring_layout(G)  # Position nodes using Fruchterman-Reingold force-directed algorithm
-cmap = plt.get_cmap('viridis')  # Color map for coloring nodes
-# Color the nodes according to their partition
-nx.draw_networkx_nodes(G, pos, partition.keys(), node_size=40,
-                       cmap=cmap, node_color=list(partition.values()))
-nx.draw_networkx_edges(G, pos, alpha=0.5)
-plt.show()
+def visualize_graph_with_centrality(adjacency_list):
+    G = nx.MultiDiGraph()
+    cmap = mpl.cm.get_cmap("Pastel2", 8)  # Get the full colormap
+    new_colors = cmap(np.linspace(0, 1, 8))[:6]  # Select the first six colors
+    new_cmap = mpl.colors.ListedColormap(new_colors) 
 
+    # Populate the graph with nodes and edges from the adjacency list
+    for node, properties in adjacency_list.items():
+        G.add_node(node, type=properties['type'])
+        for edge in properties['edges']:
+            G.add_edge(node, edge['to'], weight=edge['weight'], relationship=edge['type'])
 
+    plt.figure(figsize=(8, 6))
+    pos = nx.shell_layout(G)  # You can also use spring_layout or other layouts
+
+    # Calculate centrality and use it for node color intensity
+    centrality = nx.degree_centrality(G)
+    # Normalize the values for better visualization
+    node_colors = [centrality[node] for node in G.nodes()]
+
+    # Drawing edges uniformly
+    nx.draw_networkx_edges(G, pos, arrowstyle='->', arrowsize=15, edge_color='gray', node_size=800)
+
+    # Drawing nodes uniformly sized
+    uniform_node_size = 1000  # Set a uniform node size
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=uniform_node_size, cmap=new_cmap)
+    nx.draw_networkx_labels(G, pos)
+
+    plt.title('Graph Visualization with Shareholding Centrality', fontsize=20)
+    plt.axis('off')  # Turn off the axis
+    plt.colorbar(plt.cm.ScalarMappable(cmap=new_cmap,norm=mpl.colors.Normalize(vmin=0, vmax=1)), ax=plt.gca(), orientation='vertical', label='Degree Centrality', fraction=0.03, pad=0.02,aspect=15)
+    plt.show()
+
+```
+
+```{python}
+visualize_graph_with_centrality(adjacency_list=adjacency_list)
+```
+
+```{python}
+visualize_graph_with_centrality(adjacency_list=sub_list4)
 ```
 
 ## Conclusion
 
-这种图结构出来的知识图谱可以运用到金融行业里，比如说进行客户分群，精准提升金融行业
+In progress
 
 ## References {.unnumbered}
 
 ::: {#refs}
+Lv Huakui,Hong Liang,Ma Feicheng. Constructing Knowledge Graph for Financial Equities. Data Analysis and Knowledge Discovery, 2020, 4(5): 27-37.
+
 :::
 
