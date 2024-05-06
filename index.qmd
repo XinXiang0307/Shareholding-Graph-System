@@ -1,6 +1,6 @@
 ---
-title: Leveraging Knowledge Graphs for Shareholding Analysis in Commercial Banking
-date: '2024-04-27'
+title: Advancing Risk Management in Commercial Banking with Knowledge Graphs
+date: '2024-05-06'
 author:
   - name: Xin Xiang
     email: xx123@georgetown.edu
@@ -10,7 +10,8 @@ author:
         state: DC
         url: 'https://www.georgetown.edu/'
 abstract: |
-  draft: Based on these data and the mining of structured and semi-structured data, enterprise risk prediction methods and systems based on knowledge graphs can be constructed, so as to be able to solve the problems of high cost, low efficiency, high threshold, and low timeliness of enterprise risk prediction.
+   In the fast growing financial industry, traditional risk control methods are increasingly unable to meet the demands of complex market dynamics and exploding corporate data. This paper discusses the application of knowledge graphs in the financial industry, with a particular focus on their utility in enhancing risk management in commercial banks. The use of structured data provides a new approach to enterprise risk assessment by providing interconnected data representation that is not available in traditional relational databases. In this paper, we demonstrate, through a case study, how knowledge graphs can be used to visualize and analyze corporate relationships and shareholder structures, thus providing important assistance in risk prediction and management. By constructing a detailed knowledge graph structure to map corporate entities, personal relationships, and shareholdings, our proposed model not only reduces the inefficiencies of traditional risk assessment methods, but also lowers the cost and improves the accuracy of predictions. This methodological shift is expected to provide a more integrated and proactive approach for risk management in finance, highlighting the potential of knowledge graphs to transform data into actionable insights. Future research will delve into the implications of equity structure and its realization of knowledge discovery and feature construction based on the equity knowledge graph.
+
 keywords:
   - Knowledge Graph
   - Risk Management
@@ -18,6 +19,11 @@ keywords:
 format:
   html:
     embed-resources: true
+    toc: true
+    comments:
+      hypothesis: true
+bibliography: references.bib
+csl: diabetologia.csl
 jupyter: anly-580
 ---
 
@@ -26,57 +32,108 @@ jupyter: anly-580
 In this project, I chose graph theory and graph structure as the theme, and would like to explain how graph theory can be applied in the traditional financial industry (e.g. commercial banks).
 In the face of the explosive growth of enterprise demand in the current financial era and the rapidly changing market environment, the original single-point breakthrough approach to risk control is far from being sufficient. There is an urgent need to analyze enterprise risk, improve work efficiency and reduce credit costs through scientific and technological means. When the traditional financial industry identifies and detects enterprise credit risk, most of the traditional methods are still used: on-site investigation, rule-based prediction and so on.
 
-As we know that commercial banks have better customer data and transaction data, based on these data and the mining of structured and semi-structured data, through the knowledge graph in the vertical areas of commercial banks (e.g., equity relationship, etc.), we can dig and show a lot of details that we can not be found in ordinary relational databases. In this way, by weaving a knowledge graph, we can assist in high risk management and control in the financial industry. In this way, we can enhance the ability of commercial banks to anticipate business risks, make early predictions, and avoid risks.
+As we know that commercial banks have better customer data and transaction data, based on these data and the mining of structured and semi-structured data, through the knowledge graph in the vertical areas of commercial banks (e.g., shareholding relationship, etc.), we can dig and show a lot of details that we can not be found in ordinary relational databases [@huakui2020constructing]. In this way, by weaving a knowledge graph, we can assist in high risk management and control in the financial industry. In this way, we can enhance the ability of commercial banks to anticipate business risks, make early predictions, and avoid risks.
 
 ## Literature Review
 
-### This paragraph will discuss the evolutionary development of knowledge graphs (brief)
+### Knowledge graphs
 
-In progress
+The term "knowledge graph" first appeared in 1972, but the term was widely adopted after the release of Google Knowledge Graph in 2012 [@chah2018ok]. After the release of the knowledge graph, it quickly became popular in academia and industry Popularized and widely used in intelligent search, personalized recommendations, intelligence analysis, anti-fraud and other fields [@rs13132511]. 
 
-### This paragraph will discuss the complexity and importance of data analysis in the financial system (commercial banks) (brief)
+Knowledge graphs are a new way of representing knowledge. Essentially, the Semantic Web is an early form of Knowledge Graph. Knowledge graphs are abstract concepts describing entities and relationships between entities in the objective world, as well as networked knowledge bases consisting of entities, attributes and relationships [@rs13132511]. A knowledge graph is a collection of concepts, entities and their relationships in the abstract physical world. Knowledge graphs change the traditional information retrieval methods. On the one hand, knowledge graphs describe semantic and attribute relationships between concepts and reason about them through fuzzy string matching. In turn, knowledge graphs show users categorized and arranged structured knowledge through a grid graphical information display interface [@xu2016review]. At the same time, knowledge graph solves the problem of manually filtering useless information, which is of practical significance for the artificial intelligence society.
 
-The financial system, as the core of a modern economy, plays a very important role in promoting national development.
+![Fig. 1. Illustrative Knowledge Graph Demonstrating Connections Between Entities and Locations](knowledge_graph1.png)
 
-In progress
+Knowledge graph development is usually categorized into two types, top-down or bottom-up [@fensel2020build]. 
 
-### Discuss the applications of knowledge graphs in the financial industry (highlights)
+- The top-down approach refers to first defining an ontology (or data schema) and then extracting knowledge based on the ontology [@li2020research].
 
-
-1. fraud detection
-
-In progress
-
-2. risk assessment and management
-
-In progress
-
-3. investment analysis / regulatory compliance
-
-In progress
+- Bottom-up approach means extracting knowledge from the data and defining the ontology of the knowledge graph based on the data [@li2020research].
 
 
-## Example : Simple Shareholding Graph System
+### Big Data's Role in Financial Systems Operations
+
+At present, most areas of the financial system's operations are related to big data, with trillions of pieces of data being constantly used within the system in day-to-day decision-making [@ewen2019big]. This is why Big Data is receiving more attention in the financial services sector, as information influences important success and productivity factors. It plays an increasingly important role in consolidating our understanding of financial markets. Particularly in trade and investment, tax reform, fraud detection and investigation, risk analysis and automation [@hill2018big]. 
+
+Moreover, it has transformed the financial industry by overcoming different challenges and gaining valuable insights to improve customer satisfaction and overall banking experience [@joshibig]. Razin [@razin2015big] states that big data also transforms finance in five ways: creating transparency, analyzing risk, algorithmic trading, leveraging consumer data, and transforming culture. And this responds to the need to break down information barriers and create information linkages between financial systems.
+
+Duan and Xiong [@duan2015big] found that top-performing organizations use analytics almost five times more than lower-performing organizations when compared to intuition. Business analytics and business strategy must be tightly linked for better analytics-driven insights.Grover and Kar [@grover2017big] mention that companies such as Apple, Facebook, Google, Amazon, and eBay regularly use digitized transactional data, such as regular storage of transaction times, purchase quantities, product prices, and customer credentials, to estimate market conditions to improve business operations [@pousttchi2014engineering; @thackeray2008enhancing].
+
+### The Applications of Knowledge Graphs in the Financial Risk Control Area
+
+#### 1. Consumer Finance Fraud Detection
+
+In recent years, consumer finance lending has spread across the globe as consumers have escalated. Credit cards, consumer loans, huabei, these endless forms of lending and platforms are characterized by small size, decentralization and high concurrency. And in the financial system, there is a risk known as app fraud risk. In the case of consumer finance loans, fraud risk means that the group or individual does not intend to repay the loan from the day the application is submitted. Fraudsters often provide false identities, contact information, equipment and asset information, etc [@WU2022780]. Faced with this situation, banks and other financial systems need to anticipate the likelihood of becoming fraudulent from the applicant's information in advance, to try to avoid the situation of having a loan that is not repaid. Since the last century, they have established a rule system based on expert experience.
+
+![Fig. 2. The main workflow of using knowledge graph to detect fraud corporations](fraud_detection_graph1.png)
+
+The rule system based on expert experience specifically includes: each time a fraud event is encountered, the system will record the characteristics of the event to form rules. When the next time an event with similar characteristics is encountered, the expert rule system triggers a warning or prevents the application from lending. However, capturing all the fraud characteristics is very difficult because new rules can only be created each time a fraud event occurs. And this, obviously, signifies that the expert rule system cannot predict what kind of fraudulent behavior will happen next time [@10.1145/3194206.3194208].
+
+Using knowledge graphs, on the other hand, will provide great new horizons for fraud detection. Graph information (e.g., social network data) is used to extract features (e.g., degree centrality, connected components, and triangle counts). Then by designing rules, the accuracy of fraud detection can be improved based on a simple knowledge graph. For example, the following rule:
+
+- A borrower is likely to be fraudulent if the borrower is connected to many other fraudulent borrowers.
+
+- If Borrower A's contact happens to use the same cell phone number as Borrower B's contact, Borrower A is likely to be fraudulent, and Borrower B is also likely to be fraudulent. The number may be a proxy number for fraud.
+
+- Use the information in the chart to find the contact information of the fraudulent borrower to recover or pull the plug.
+
+![Fig. 3. Schematic diagram of audit information knowledge graph](fraud_detection_graph2.png)
+
+
+#### 2. Risk Assessment and Management
+
+In the field of risk control, risks often do not occur in isolation. For enterprise customers, with the continuous development of the capital chain, supply chain, guarantee chain, and conglomeration, it is easy to have a chain reaction like a fire [@yuan2022summary]. The traditional risk control system is difficult to cope with such correlation risks, and the knowledge graph constructed based on graph data structure is an effective way to solve such problems. Knowledge graph technology can correlate isolated data from different data source systems, provide a unified view of customer risk, break information barriers, and effectively solve the problem of information asymmetry; it can also realize insights into customer relationship networks, effectively prevent and control associative risks, and improve risk control effectiveness.
+
+According to business and data scenarios, three major corporation risk knowledge graph networks [@9421819] can be formed as follows:
+
+- **Corporation upstream and downstream knowledge graph:** Using bank flow and industry chain information, NLP technology is used to extract entities, relationships and attributes from unstructured data to build an industry chain knowledge graph. When the transaction volume and frequency between two companies exceed the preset threshold and the industry relationship conforms to the upstream and downstream model, their upstream and downstream relationships are confirmed.
+
+- **Corporation investment and financing knowledge graph:**
+Combining public opinion, litigation and industrial and commercial data, and using NLP algorithm to process it, an investment and financing knowledge map including enterprises and individuals is formed. Financial disputes between individuals and businesses may hint at investment relationships.
+
+- **Closely related to corporation knowledge graph:** 
+Based on the company's basic information, transaction data, and external public opinion, lawsuits, and industrial and commercial data, closely related information between companies is extracted. Capital transactions exceeding the threshold, cross-shareholder relationships, legal person relationships, multiple lawsuits, as well as financial transactions with individuals or executive shareholder relationships, etc., can all be regarded as close connections.
+
+#### 3. Visual Analysis
+
+With the continuous development of operations, the cross-industry operations, equity mergers and acquisitions and financing structures of credit-granting enterprises have become increasingly complex and hidden, which has brought huge challenges to the credit monitoring and risk assessment of commercial banks. 
+
+In the context of the accelerated financial digitalization agenda, commercial banks urgently need to promote technological innovation in risk management and accelerate digital transformation [@yuan2022summary]. In order to solve the shortcomings of the traditional risk control model, the knowledge graph in the field of risk control can be used to convert redundant information and build a highly structured knowledge network.
+
+These knowledge networks enable visualization by mapping knowledge resources into graphical elements, providing multi-dimensional insights and visualizing complex relationships between entities. For example, in their research, Wang et al. [@wang2020knowledge] built an end-to-end risk control domain knowledge graph based on transaction data, and stored the knowledge in the form of triples in the Neo4j graph database. This method not only displays the business relationships between customers, but also allows map users to have a more comprehensive understanding of the information through a combination of text lists and graphical visualizations, thereby more effectively monitoring and assessing risks.
+
+## Close Corporation-related Knowledge Graph
 
 ### Description
 
-In progress
+In this study, the main focus is on visualization through the use of knowledge graphs of closely related corporations. We adopt a top-down approach to constructing the knowledge graph, specifically modeling stock holdings. Participating organizations include not only banks, but also non-banking financial institutions such as fund houses and securities firms, as well as non-financial institutions. Person nodes in the graph represent people connecting two or more institutions, and this diversity of node meanings complements previous research. In the construction of relationships among nodes, we mainly base on shareholding relationships, supplemented by employment and affinity relationships, and plot these relationships as edges.
+
+For visualization, we designed a **query function** that allows users to search for the desired close firm relationship graph by node or relationship type. This design effectively reduces the interference of other irrelevant information during the visualization process, while aiding the user in a more direct assessment of the vertical direction of the holding relationships. In addition, we have introduced a degree-centeredness visualization feature that enables users to identify the most central companies or individuals in the query content. The integration of these functions not only improves the efficiency of information retrieval, but also enhances the operability and intuitiveness of the knowledge graph in practical applications.
+
 
 ### Data source 
 
 The data was from gihub project [Nebula Graph Shareholding project](https://github.com/wey-gu/nebula-shareholding-example/tree/main). And the author of the project says that the data was a faker data which will simulates the real situation and does not cause information leakage. So I borrowed the author's data generator code and made changes to complete the data acquisition for this project.
 
-There are various kinds of relationships when we checking companies' shareholding breakthrough, here let's simplify it with only two kind of entities: person and corp, and with following relationship types.
+There are various kinds of relationships when we checking corporations' shareholding breakthrough, here let's simplify it with only two kind of entities: person and corp, and with following relationship types.
 
-- `person` can hold a `corp` in {share} %
+- `person` can hold a `corp` in {share} %.
 
-- `person` can be relative with another `person`
+- `person` can be relative with another `person`.
 
-- `corp` can hold another `corp` in {share} %
+- `corp` can hold another `corp` in {share} %.
 
-- `corp` can be a branch of another `corp`
+- `corp` can be a branch of another `corp`.
 
-- `person` can be as a role of a `corp`
+- `person` can be as a role of a `corp`.
+
+It can be found that by thinking and analyzing the above relationships, we get a ternary combination of this knowledge graph:
+
+- **Entity:** Corporations, person.
+- **Relationships:**
+    - Relationships between Corporations such as investment, investment and financing, parent-subsidiary firms, etc. relationships.
+    - Functions held between Corporations and person.
+    - Affinity relationships between person and person.
 
 
 ### Code
@@ -90,7 +147,7 @@ Since the original dataset is stored in the graph database, you can set the tag 
 Due to the large number of sample datasets on github, it may cause the visualization to be too complex and difficult to understand during simple graph visualization. So we simplify the dataset size and complexity by the following code for later presentation.
 
 ```{python}
-#| echo: false
+#| eval: false
 import csv
 import pandas as pd
 from faker import Faker
@@ -157,7 +214,7 @@ csv_writer('data/person_corp_role.csv', PERSON_ROLE_COUNT, person_corp_role_gene
 
 #### Import Data
 
-In this step, we import the csv data from the data generator to generate a dataframe, so that we can pass parameters to the graph class.
+In this step, we import CSV data from the Data Generator to generate data frames so that we can pass parameters to the `SelfdefinedGraph` class.
 
 ```{python}
 import pandas as pd
@@ -237,29 +294,39 @@ person_corp_role_df.head(6)
 ```
 :::
 
-#### Define the SelfdefinedGraph Class
+#### Define the Class
 
-The SelfdefinedGraph Class
-Each of the bullt point here represents an element of this class.
+In the following cell, we will create a working `SelfdefinedGraph` class. Each of the bullt point here represents an element of this class.
 
-- `__init__(self)`. This 
+- `__init__(self)`. This constructor function take only the required `self` argument. And will also perform the following initialization steps:
+    - Create an instance variable called `adjacency_list`, which has the initial value of an empty list.
+    - Set a directed graph (DiGraph) `G` using the networkx library.
 
-- `add_vertex(self, vertex, vertex_type)`.
+- `add_vertex(self, vertex, vertex_type)`. Adds a vertex to the graph.
+    - The vertex is added to the adjacency list with its type and an empty edge list.
+    - Add vertices to the networkx graph and give their type as an attribute.
 
-- `add_edge(self, from_vertex, to_vertex, relationship_type, weight=None)`
+- `add_edge(self, from_vertex, to_vertex, relationship_type, weight=None)`. Adds a directed edge from one vertex to another with an optional weight. 
+    - The edge is only added if a weight is provided. This is because edges without weight in the networkx's digraph will give an error.
+    - Add the edge to the networkx graph with the specified weight and relationship type as attributes.
 
-- `remove_vertex(self, vertex)`.
+- `remove_vertex(self, vertex)`. Removes a vertex and all its connected edges from the graph.  
+    - Update the adjacency list to remove all edges pointing to the removed vertex as well as the vertex itself.
 
-- `remove_edge(self, from_vertex, to_vertex)`.
+- `remove_edge(self, from_vertex, to_vertex)`. Delete the edge from the specified source vertex to the target vertex. 
+    - This update is reflected in the adjacency list by deleting specific edge records.
 
-- `update_edge(self, from_vertex, to_vertex, new_weight)`.
+- `update_edge(self, from_vertex, to_vertex, new_weight)`. Updates the weight of a specific edge between two vertices. 
+    - The method iterates through the list of edges of the source vertex to find the target vertex and update its weights.
 
-- `print_adjacency_list(self)`.
+- `query_subset_by_node(self, node)`. Returns a subset of the graph containing all connections to and from a specified node. 
+    - Construct a new adjacency list that includes only the specified node and its directly connected neighbors.
 
-- ``
+- `query_subset_by_relationship_type(self, relationship_type)`. Returns a subset of the graph containing only the edges of a specified relationship type. 
+    - This subset includes both the nodes and their edges that match the relationship type, providing a filtered view of the graph based on the relationship.
 
 ```{python}
-# Python code to illustrate the example
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from scipy import sparse
@@ -276,7 +343,7 @@ class SelfdefinedGraph:
             self.G.add_node(vertex, type=vertex_type)
 
     def add_edge(self, from_vertex, to_vertex, relationship_type, weight=None):
-        if weight is not None:  # Only add edges that have a defined weight
+        if weight is not None: 
             if from_vertex in self.adjacency_list:
                 self.adjacency_list[from_vertex]['edges'].append({
                     'to': to_vertex,
@@ -306,11 +373,6 @@ class SelfdefinedGraph:
                     edge['weight'] = new_weight
 
     def query_subset_by_node(self, node):
-        """
-        Returns a subset containing all connections to and from the specified node.
-        The returned structure mimics the adjacency_list structure but limited to nodes
-        connected to the specified node.
-        """
         if node not in self.adjacency_list:
             return {}  # Node does not exist
 
@@ -331,9 +393,6 @@ class SelfdefinedGraph:
         return subset
     
     def query_subset_by_relationship_type(self, relationship_type):
-        """
-        Returns a subset of the adjacency list containing only edges of the specified relationship type.
-        """
         subset = {}
         for node, properties in self.adjacency_list.items():
             # Filter edges to include only those of the specified type
@@ -352,6 +411,10 @@ class SelfdefinedGraph:
 
         return subset
 ```
+
+#### Graph construction
+
+The following code shows how to initialize a graph and add nodes and edges to it. This includes adding individuals and companies to the graph as nodes, and adding edges that represent shareholding, kinship, and role relationships:
 
 ```{python}
 # Initialize graph
@@ -377,7 +440,9 @@ for _, row in person_corp_role_df.iterrows():
     graph.add_edge(row['person_id'], row['corp_id'], 'roles', row['role'])
 ```
 
-visualize_graph function
+#### Visualizing graphical relationships
+
+In order to more intuitively display and understand complex relationships in graphs, we used matplotlib and networkx libraries to create visual representations of graphs. The following code snippet demonstrates how to convert the adjacency list of a graph into a multiple directed graph and use different colors and labels to distinguish between different types of nodes and edges.
 
 ```{python}
 import matplotlib.pyplot as plt
@@ -391,7 +456,7 @@ def visualize_graph(adjacency_list):
         for edge in properties['edges']:
             G.add_edge(node, edge['to'], weight=edge['weight'], relationship=edge['type'])
     plt.figure(figsize=(8,6))
-    pos = nx.shell_layout(G)  # You can change the layout as per your need
+    pos = nx.shell_layout(G) 
     edge_colors = []
     for u, v, data in G.edges(data=True):
         color = '#0077B6' if data['relationship'] == 'holds' else '#023047' if data['relationship'] == 'relative' else '#FB8500'
@@ -413,15 +478,17 @@ def visualize_graph(adjacency_list):
     holds_patch = mpatches.Patch(color='#0077B6', label='Holds Relationship')
     relative_patch = mpatches.Patch(color='#023047', label='Relative Relationship')
     role_patch = mpatches.Patch(color='#FB8500', label='Role Relationship')
-    legend = plt.legend(handles=[person_patch, corp_patch, role_patch, holds_patch, relative_patch], loc='upper left', bbox_to_anchor=(0.93, 1))
-    legend.set_title('Nodes & Edges Types')
+    legend = plt.legend(handles=[person_patch, corp_patch, role_patch, holds_patch, relative_patch], loc='upper left', bbox_to_anchor=(0.93, 0.95))
+    plt.setp(legend.get_texts(), fontsize='small')  
+    legend.get_frame().set_linewidth(0.4)
+    legend.set_title('Nodes & Edges Types', prop={'size': 'medium'})
 
     plt.title('Graph Visualization of Shareholding Relationships', fontsize=20)
     plt.axis('off')  # Turn off the axis
     plt.show()
 ```
 
-整体画出股权关系图，数据错综复杂，且可视化中很难看清。
+By running the following code snippet, we can see a visual representation of each entity and relationship in the network, and further analyze and understand complex equity relationships. However, you will find that if you visualize the overall data, the specific details in the picture are still difficult to see clearly.
 
 ```{python}
 adjacency_list = graph.adjacency_list
@@ -429,12 +496,14 @@ visualize_graph(adjacency_list=adjacency_list)
 ```
 
 
-分类型查询，可视化会清晰很多
+In the provided `SelfdefinedGraph` class, the functions `query_subset_by_node()` and `query_subset_by_relationship_type()` facilitate targeted queries within the graph structure. These functions are instrumental in retrieving and visualizing specific subsets of the graph based on node identity or relationship type. This capability enhances the clarity and conciseness of the visualizations by focusing on relevant aspects of the graph.
 
-1. 按人/公司查询
+**1.Search by person/corporation**
+
+By specifying nodes (people or companies), query and visualize the subset of the graph that is directly related to those nodes. This helps analyze the network structure of specific entities and their direct connections.
 
 ```{python}
-sub_list1 = graph.query_subset_by_node('p_3')
+sub_list1 = graph.query_subset_by_node('p_5')
 visualize_graph(adjacency_list=sub_list1)
 ```
 
@@ -443,7 +512,9 @@ sub_list2 = graph.query_subset_by_node('c_5')
 visualize_graph(adjacency_list=sub_list2)
 ```
 
-2. 按关系查询
+**2.Search by relationship type**
+
+Filter and visualize the subset of graphs related to these relationships by specifying relationship types (e.g. ownership, kinship, role). This approach is particularly useful for analyzing specific types of interactions and connections.
 
 ```{python}
 sub_list3 = graph.query_subset_by_relationship_type('holds')
@@ -460,6 +531,9 @@ sub_list5 = graph.query_subset_by_relationship_type('roles')
 visualize_graph(adjacency_list=sub_list5)
 ```
 
+#### Graphical Visualization of Degree Centrality
+
+In order to analyze the influence of nodes in the network more deeply, we introduce the concept of degree centrality to measure the importance of nodes. The code example below shows how to integrate degree centrality into the visualization of a graph, allowing us to visually identify key nodes by their color intensity.
 
 ```{python}
 import networkx as nx
@@ -470,7 +544,7 @@ import matplotlib as mpl
 
 def visualize_graph_with_centrality(adjacency_list):
     G = nx.MultiDiGraph()
-    cmap = mpl.cm.get_cmap("Pastel2", 8)  # Get the full colormap
+    cmap = mpl.colormaps.get_cmap("Pastel2") 
     new_colors = cmap(np.linspace(0, 1, 8))[:6]  # Select the first six colors
     new_cmap = mpl.colors.ListedColormap(new_colors) 
 
@@ -481,7 +555,7 @@ def visualize_graph_with_centrality(adjacency_list):
             G.add_edge(node, edge['to'], weight=edge['weight'], relationship=edge['type'])
 
     plt.figure(figsize=(8, 6))
-    pos = nx.shell_layout(G)  # You can also use spring_layout or other layouts
+    pos = nx.shell_layout(G) 
 
     # Calculate centrality and use it for node color intensity
     centrality = nx.degree_centrality(G)
@@ -503,22 +577,30 @@ def visualize_graph_with_centrality(adjacency_list):
 
 ```
 
+This visualization method not only highlights the key nodes in the network, but also intuitively shows the amount of influence of each node through color shades. This is crucial for analyzing important players in complex systems such as equity structures and social networks.
+
+By running the following code snippet, we can obtain a network graph with metrics of degree centrality to more effectively reveal and understand the key dynamics and structures in the network.
+
 ```{python}
 visualize_graph_with_centrality(adjacency_list=adjacency_list)
 ```
+
+As you can see from this graph, the centrality of the entire knowledge graph falls on the first corporation, which has the highest centrality. This also means that whether it is a company or an individual, the first corporation must be considered the leading company here.
 
 ```{python}
 visualize_graph_with_centrality(adjacency_list=sub_list4)
 ```
 
+And when we narrow down the query to people who are related, we find that the person with id 5 shares kinship with all three people, while the others are not related as much as he is. The narrowed down one is clearer than the centrality of the knowledge graph degree for the whole list.
+
 ## Conclusion
 
-In progress
+This Study uses shareholding data to construct a detailed knowledge graph that depicts organizations and individuals as interconnected nodes. This method not only bridges the gaps identified in previous studies, but also enriches the understanding of complex network dynamics within the financial industry. The graph primarily demonstrates intricate shareholding relationships, but also contains other connections through employment and kinship, and is a prototype of a knowledge graph for associated corporations.
 
-## References {.unnumbered}
+Through the graph data structure, this article creates a simple graph of shareholding relationships, transforming the more complex and underutilized shareholding structured data into clear and easy-to-understand graph data. This application can well assist the high-risk management and control of the financial industry. Future research based on this work can further explore shareholding penetration to infer detailed relationships such as holdings, shareholdings, concerted actions, related transactions, and common personnel on the basis of basic shareholding relationships, and realize knowledge discovery based on the financial shareholding knowledge map.
+
+### References
 
 ::: {#refs}
-Lv Huakui,Hong Liang,Ma Feicheng. Constructing Knowledge Graph for Financial Equities. Data Analysis and Knowledge Discovery, 2020, 4(5): 27-37.
-
 :::
 
